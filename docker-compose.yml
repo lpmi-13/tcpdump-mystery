@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  webserver:
+    container_name: webserver
+    build: ./express-app
+    ports:
+      - 3000:3000
+    networks:
+      - default
+
+  http-sender:
+    container_name: http-sender
+    build: ./golang-sender
+    networks:
+      - default
+    # we don't want to start firing requests until the webserver is up
+    depends_on:
+      - webserver
+    restart: always
+    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+
+networks:
+  default:
+    name: tcpdump-mystery
+    driver: bridge
