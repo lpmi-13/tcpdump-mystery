@@ -1,0 +1,12 @@
+image:
+  # set up tcpdump so we don't have to install it manually
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: start the containers
+    command: docker-compose up --build
+
+ports:
+  # we'll use this to check how quickly the website loads
+  - port: 3000
+    onOpen: open-preview
