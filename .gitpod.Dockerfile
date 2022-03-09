@@ -1,3 +1,3 @@
 FROM gitpod/workspace-full
 
-RUN apt update -y && apt install -y tcpdump
+RUN sudo apt update -y && sudo apt install -y tcpdump
