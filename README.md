@@ -4,6 +4,12 @@ Using `tcpdump` is super cool, but there aren't very many good learning resource
 
 In production systems, often times, it can be a handy tool when something goes wrong, so let's make something go wrong locally and see if `tcpdump` can help us find it and fix it!
 
+## Run in Gitpod
+
+You can run this entirely in gitpod if you want.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/lpmi-13/tcpdump-mystery)
+
 ## Setup
 
 You'll need docker and docker-compose for this, so make sure those are installed.
