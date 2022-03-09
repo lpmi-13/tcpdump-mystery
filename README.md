@@ -20,4 +20,8 @@ Something is wrong with our nice shiny webserver serving content at `localhost:3
 
 So first, we can run `tcpdump` and check for packets going to that port.
 
-Then we see where the packets are coming from. This should tell us the noisy process. Then we kill the process, and like magic, the webserver is responding again. Nice work!
+```
+sudo tcpdump dst 3000
+```
+
+Then we see where the packets are coming from. This should tell us the noisy process. Then we kill the container at that IP adderss, and like magic, the webserver is responding again. Nice work!
