@@ -10,7 +10,7 @@ You can run this entirely in gitpod if you want.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/lpmi-13/tcpdump-mystery)
 
-## Setup
+## Setup for local runs
 
 You'll need docker and docker-compose for this, so make sure those are installed.
 
