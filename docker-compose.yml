@@ -18,7 +18,7 @@ services:
     depends_on:
       - webserver
     restart: always
-    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+    entrypoint: ["/http-sender", "http://webserver:3000", "20"]
 
   http-sender2:
     container_name: http-sender2
@@ -29,7 +29,7 @@ services:
     depends_on:
       - webserver
     restart: always
-    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+    entrypoint: ["/http-sender", "http://webserver:3000", "1"]
 
   http-sender3:
     container_name: http-sender3
@@ -40,7 +40,7 @@ services:
     depends_on:
       - webserver
     restart: always
-    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+    entrypoint: ["/http-sender", "http://webserver:3000", "1"]
 
   http-sender4:
     container_name: http-sender4
@@ -51,7 +51,7 @@ services:
     depends_on:
       - webserver
     restart: always
-    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+    entrypoint: ["/http-sender", "http://webserver:3000", "1"]
 
   http-sender5:
     container_name: http-sender5
@@ -62,7 +62,7 @@ services:
     depends_on:
       - webserver
     restart: always
-    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+    entrypoint: ["/http-sender", "http://webserver:3000", "1"]
 
 networks:
   default:
