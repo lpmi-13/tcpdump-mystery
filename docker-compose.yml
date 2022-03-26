@@ -42,6 +42,28 @@ services:
     restart: always
     entrypoint: ["/http-sender", "http://webserver:3000", "10"]
 
+  http-sender4:
+    container_name: http-sender4
+    build: ./golang-sender
+    networks:
+      - default
+    # we don't want to start firing requests until the webserver is up
+    depends_on:
+      - webserver
+    restart: always
+    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+
+  http-sender5:
+    container_name: http-sender5
+    build: ./golang-sender
+    networks:
+      - default
+    # we don't want to start firing requests until the webserver is up
+    depends_on:
+      - webserver
+    restart: always
+    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+
 networks:
   default:
     name: tcpdump-mystery
