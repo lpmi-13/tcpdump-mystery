@@ -3,11 +3,9 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - name: shuffle up the concurrent connection values
+  - name: shuffle up the concurrent connection values and start the containers
     before: shuf .env.suspects > .env.suspects.tmp && mv .env.suspects.tmp .env.suspects
-  - name: set up the random suspect environment variables
     init: ./randomize_suspects.sh
-  - name: start the containers
     command: docker-compose --env-file .env.suspects up --build
 
 ports:
