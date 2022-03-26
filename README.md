@@ -4,6 +4,17 @@ Using `tcpdump` is super cool, but there aren't very many good learning resource
 
 In production systems, often times, it can be a handy tool when something goes wrong, so let's make something go wrong locally and see if `tcpdump` can help us find it and fix it!
 
+**DISCLAIMER**
+Sometimes, if the system you're working in has very high traffic, or the things you want to capture are very verbose, tcpdump could be unsuitable, as mentioned [here](https://packetpushers.net/masterclass-tcpdump-basics/)
+
+- Be very careful when specifying expressions and try to make them as specific as possible.
+- Don’t capture during times of heavy traffic/load.
+- If you wish to capture entire packet contents, do a test capture only capturing the default 68Bytes first and make a judgement on whether the system will cope with the full packet content capture.
+- Where writing to disk, carefully monitor the size of the file and make sure the host in question has the likely disk resources required available, or use the -c parameter to limit the number of packets captured.
+- Never use an expression that would capture traffic to or from your remote telnet/SSH/whatever terminal/shell. tcpdump output would generate traffic to your terminal, resulting in further output, resulting in more traffic to your terminal and so on in an infinite and potentially harmful feedback loop.
+
+...in such cases, a tool like tcpstat might be a better choice.
+
 ## Run in Gitpod
 
 You can run this entirely in gitpod if you want.
