@@ -4,7 +4,7 @@ image:
 
 tasks:
   - name: start the containers
-    command: docker-compose up --build
+    command: docker-compose --env-file .env.suspects up --build
 
 ports:
   # we'll use this to check how quickly the website loads
