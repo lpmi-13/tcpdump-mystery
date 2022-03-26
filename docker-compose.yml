@@ -9,7 +9,29 @@ services:
     networks:
       - default
 
-  http-sender:
+  http-sender1:
+    container_name: http-sender
+    build: ./golang-sender
+    networks:
+      - default
+    # we don't want to start firing requests until the webserver is up
+    depends_on:
+      - webserver
+    restart: always
+    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+
+  http-sender2:
+    container_name: http-sender
+    build: ./golang-sender
+    networks:
+      - default
+    # we don't want to start firing requests until the webserver is up
+    depends_on:
+      - webserver
+    restart: always
+    entrypoint: ["/http-sender", "http://webserver:3000", "10"]
+
+  http-sender3:
     container_name: http-sender
     build: ./golang-sender
     networks:
