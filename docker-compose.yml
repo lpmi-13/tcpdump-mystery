@@ -10,7 +10,7 @@ services:
       - default
 
   http-sender1:
-    container_name: http-sender
+    container_name: http-sender1
     build: ./golang-sender
     networks:
       - default
@@ -21,7 +21,7 @@ services:
     entrypoint: ["/http-sender", "http://webserver:3000", "10"]
 
   http-sender2:
-    container_name: http-sender
+    container_name: http-sender2
     build: ./golang-sender
     networks:
       - default
@@ -32,7 +32,7 @@ services:
     entrypoint: ["/http-sender", "http://webserver:3000", "10"]
 
   http-sender3:
-    container_name: http-sender
+    container_name: http-sender3
     build: ./golang-sender
     networks:
       - default
