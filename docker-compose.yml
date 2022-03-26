@@ -8,6 +8,29 @@ services:
       - 3000:3000
     networks:
       - default
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:12
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - 5432:5432
+    networks:
+      - default
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      # create the greeting table on startup
+      - ./sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+      # then we create the simple greeting in the greeting table
+      - ./sql/insert_greeting.sql:/docker-entrypoint-initdb.d/insert_greeting.sql
 
   http-sender1:
     container_name: http-sender1
@@ -17,6 +40,7 @@ services:
     # we don't want to start firing requests until the webserver is up
     depends_on:
       - webserver
+      - postgres
     restart: always
     entrypoint: ["/http-sender", "http://webserver:3000", "${SUSPECT1}"]
 
@@ -28,6 +52,7 @@ services:
     # we don't want to start firing requests until the webserver is up
     depends_on:
       - webserver
+      - postgres
     restart: always
     entrypoint: ["/http-sender", "http://webserver:3000", "${SUSPECT2}"]
 
@@ -39,6 +64,7 @@ services:
     # we don't want to start firing requests until the webserver is up
     depends_on:
       - webserver
+      - postgres
     restart: always
     entrypoint: ["/http-sender", "http://webserver:3000", "${SUSPECT3}"]
 
@@ -50,6 +76,7 @@ services:
     # we don't want to start firing requests until the webserver is up
     depends_on:
       - webserver
+      - postgres
     restart: always
     entrypoint: ["/http-sender", "http://webserver:3000", "${SUSPECT4}"]
 
@@ -61,6 +88,7 @@ services:
     # we don't want to start firing requests until the webserver is up
     depends_on:
       - webserver
+      - postgres
     restart: always
     entrypoint: ["/http-sender", "http://webserver:3000", "${SUSPECT5}"]
 

@@ -1,9 +1,25 @@
 var express = require('express');
 var router = express.Router();
 
+var Pool = require('pg').Pool;
+var pool = new Pool({
+  user: 'postgres',
+  host: 'postgres',
+  database: 'postgres',
+  password: 'postgres',
+  port: 5432,
+});
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  pool.query('SELECT greeting_text FROM greeting WHERE greeting_id = 1;', (error, results) => {
+    if (error) {
+       throw error;
+    }
+    var greeting = results.rows[0].greeting_text;
+    res.render('index', { title: greeting});
+  })
 });
 
 module.exports = router;
