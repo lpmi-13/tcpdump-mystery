@@ -26,6 +26,8 @@ docker-compose up --build
 
 Something is wrong with our nice shiny webserver serving content at `localhost:3000`...it looks like it's really sluggish, and so it might be a good idea to se if it's experiencing super high traffic.
 
+### Finding our interface
+
 So first, we need to figure out what interface things are running on:
 
 ```
@@ -37,18 +39,86 @@ $ for interface in $(ip link show | grep '^[[:digit:]]\+' | awk -F ':' '{print $
 done;
 ```
 
+> the newlines are just to add some whitespace and make it easier to read, once the interface starts sending packets through. Also, you probably already know that the containers will be using `veth` interfaces, but in other cases, you might not be able to assume that, so this is a good exercise anyway.
+
+You should see one of the interfaces spit out a whole bunch of traffic, and then something like:
+
+```
+793 packets captured
+818 packets received by filter
+25 packets dropped by kernel
+Error: no such file "f"
+Error: no such file "\n\n"
+this interface is br-64b7ac73b79c
+```
+
 This should make it very obvious which interface the packets are being sent on. The use of docker compose with a bridge network _inside_ the gitpod (itself running in a container) makes this a bit more complicated than just local running, but our loop will find the correct interface for us, so no worries there!
 
-> the newlines are just to add some whitespace and make it easier to read, once the interface starts sending packets through.
+So it is indeed the bridge interface...but that doesn't help us narrow anything down...
 
-Next, we can run `tcpdump` against that interface and check for packets going to that port (which should show us the same as above, but it's just to confirm).
-
-`sudo tcpdump -i INTERFACE_FROM_ABOVE_OUTPUT dst 3000`
-
-This should show a few different sources.
+Let's try something a bit different, using the `veth` interfaces directly (since they have weird names with `@` characters, they don't work with our previous attempt:
 
 ```
-sudo tcpdump dst 3000
+for interface in $(ip link show | grep veth | awk -F ' ' '{print $2}' | awk -F '@' '{print $1}'); do
+  sudo timeout 3 tcpdump -nq -i $interface "tcp port 3000" > /dev/null
+  printf "\n"
+  echo "this interface is $interface"
+  printf "\n"
+done;
 ```
 
-Then we see where the packets are coming from. This should tell us the noisy process. Then we kill the container at that IP adderss, and like magic, the webserver is responding again. Nice work!
+You should see some output like:
+
+```
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on veth4123d57, link-type EN10MB (Ethernet), capture size 262144 bytes
+82 packets captured
+117 packets received by filter
+0 packets dropped by kernel
+
+this interface is veth4123d57
+```
+
+If you scroll back up through the results (or have sharp eyes), you've probably noticed two very noisy interfaces. One of them will be the main veth for the bridge network...and the other one is going to be our suspect!
+
+### Connect the veth interface to the container
+
+Now we need to find which container is using that interface, which isn't incredibly straightforward, but digging into the containers themselves should tell us. So we can see from the above (eg, `veth62fe590`), that we've isolated the interface sending the traffic.
+
+And if we look in the output of `ip link show` and filter by that interface, we should be able to get the number of the interface mapped to our host.
+
+```
+ip link show | grep veth62fe590
+```
+
+and we should see something like
+
+```
+48: veth62fe590@if47: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-64b7ac73b79c state UP mode DEFAULT group default 
+```
+
+Great! So the network interface is mapped to `48` in our host. Now we just need to see which container has that number internally at `/sys/class/net/eth0/iflink`...
+
+So starting with the first http-sender container, run this command:
+
+```
+docker exec -it 4aae6fcf40d5 cat /sys/class/net/eth0/iflink
+```
+
+and you should see the output (we're looking for 48)
+
+```
+46
+```
+
+Dang...that's not the right one. Keep trying to above command until you find one with the output `48`, and that's our container!
+
+### Arresting the suspect
+
+Now that we've found our container (turns out it was http-sender3 in this case), lets stop it with:
+
+docker stop http-sender3 
+
+And like magic, our web server is nice and responsive again! Great job!
+
+:clapping: :clapping: :clapping:
