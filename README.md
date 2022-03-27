@@ -35,7 +35,7 @@ docker-compose up --build
 
 ## The Mystery
 
-Something is wrong with our nice shiny webserver serving content at `localhost:3000`...it looks like it's really sluggish, and so it might be a good idea to se if it's experiencing super high traffic.
+Something is wrong with our nice shiny webserver serving content at `localhost:3000`...it looks like it's really sluggish, and so it might be a good idea to see if it's experiencing super high traffic.
 
 ### Finding our interface
 
@@ -44,9 +44,9 @@ So first, we need to figure out what interface things are running on:
 ```
 $ for interface in $(ip link show | grep '^[[:digit:]]\+' | awk -F ':' '{print $2}'); do
   sudo timeout 1 tcpdump -i $interface port 3000
-  printf "\n\n"
+  printf "\n"
   echo "this interface is $interface"
-  printf "\n\n"
+  printf "\n"
 done;
 ```
 
@@ -92,7 +92,7 @@ this interface is veth4123d57
 
 If you scroll back up through the results (or have sharp eyes), you've probably noticed two very noisy interfaces. One of them will be the main veth for the bridge network...and the other one is going to be our suspect!
 
-### Connect the veth interface to the container
+### Trace the veth interface to the container
 
 Now we need to find which container is using that interface, which isn't incredibly straightforward, but digging into the containers themselves should tell us. So we can see from the above (eg, `veth62fe590`), that we've isolated the interface sending the traffic.
 
@@ -122,7 +122,7 @@ and you should see the output (we're looking for 48)
 46
 ```
 
-Dang...that's not the right one. Keep trying to above command until you find one with the output `48`, and that's our container!
+Dang...that's not the right one. Keep trying the above command until you find one with the output `48`, and that's our suspect container!
 
 ### Arresting the suspect
 
