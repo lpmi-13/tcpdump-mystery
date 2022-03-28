@@ -8,6 +8,7 @@ tasks:
     init: ./randomize_suspects.sh
     command: docker-compose --env-file .env.suspects up --build
   - name: terminal for tcpdump investigation
+    init: until (curl --head -s localhost:3000 > /dev/null); do sleep 1; clear; echo "Waiting for the containers to start up..."; done
     command: echo "let's start the investigation!"
     openMode: tab-after
 
