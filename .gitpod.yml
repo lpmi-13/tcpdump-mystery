@@ -8,6 +8,9 @@ tasks:
     init: ./randomize_suspects.sh
     command: docker-compose --env-file .env.suspects up --build
     openMode: split-left
+  - name: terminal for tcpdump investigation
+    command: echo "let's start the investigation!"
+    openMode: split-right
 
 ports:
   # we'll use this to check how quickly the website loads
