@@ -7,6 +7,7 @@ tasks:
     before: shuf .env.suspects > .env.suspects.tmp && mv .env.suspects.tmp .env.suspects
     init: ./randomize_suspects.sh
     command: docker-compose --env-file .env.suspects up --build
+    openMode: split-left
 
 ports:
   # we'll use this to check how quickly the website loads
