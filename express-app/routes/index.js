@@ -17,8 +17,9 @@ router.get('/', function(req, res, next) {
     if (error) {
        throw error;
     }
-    var greeting = results.rows[0].greeting_text;
-    res.render('index', { title: greeting});
+    const timeNow = `the time is now ${new Date().toLocaleString()}`;
+    const greeting = results.rows[0].greeting_text;
+    res.render('index', { title: greeting, time: timeNow });
   })
 });
 
