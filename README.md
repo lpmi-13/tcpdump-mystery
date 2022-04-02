@@ -28,7 +28,8 @@ You'll need docker and docker-compose for this, so make sure those are installed
 After that, you should be able to run
 
 ```
-docker-compose --env-file .env.suspects.local up --build
+./randomize_suspects.sh
+docker-compose --env-file .env.suspects up --build
 ```
 
 > This is already set up in the gitpod, so you won't need it if going that route.

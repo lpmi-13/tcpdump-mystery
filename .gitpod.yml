@@ -4,7 +4,6 @@ image:
 
 tasks:
   - name: start the containers
-    before: shuf .env.suspects > .env.suspects.tmp && mv .env.suspects.tmp .env.suspects
     init: ./randomize_suspects.sh
     command: docker-compose --env-file .env.suspects up --build
   - name: tcpdump investigation
