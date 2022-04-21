@@ -136,7 +136,7 @@ So the third container we have is our suspect!
 
 Now that we've found our container (turns out it was http-sender3 in this case), lets stop it with:
 
-docker stop http-sender3 
+`docker stop http-sender3`
 
 And like magic, our web server is nice and responsive again! Great job!
 
