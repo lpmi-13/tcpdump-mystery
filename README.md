@@ -25,7 +25,7 @@ You can run this entirely in gitpod if you want.
 
 You'll need docker and docker-compose for this, so make sure those are installed.
 
-After that, you should be able to run
+After that, you should be able to run the randomization script (so that each investigation is unpredictable):
 
 ```
 ./randomize_suspects.sh
@@ -56,12 +56,11 @@ done;
 You should see one of the interfaces spit out a whole bunch of traffic, and then something like:
 
 ```
-793 packets captured
-818 packets received by filter
-25 packets dropped by kernel
-Error: no such file "f"
-Error: no such file "\n\n"
-this interface is br-64b7ac73b79c
+3273 packets captured
+5772 packets received by filter
+2483 packets dropped by kernel
+
+this interface is br-37099edf5afc
 ```
 
 This should make it very obvious which interface the packets are being sent on. The use of docker compose with a bridge network _inside_ the gitpod (itself running in a container) makes this a bit more complicated than just local running, but our loop will find the correct interface for us, so no worries there!
@@ -106,24 +105,32 @@ ip link show | grep veth62fe590
 and we should see something like
 
 ```
-48: veth62fe590@if47: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-64b7ac73b79c state UP mode DEFAULT group default 
+15: veth62fe590@if47: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-64b7ac73b79c state UP mode DEFAULT group default 
 ```
 
-Great! So the network interface is mapped to `48` in our host. Now we just need to see which container has that number internally at `/sys/class/net/eth0/iflink`...
+Great! So the network interface is mapped to `15` in our host. Now we just need to see which container has that number internally at `/sys/class/net/eth0/iflink`...
 
-So starting with the first http-sender container, run this command:
-
-```
-docker exec -it 4aae6fcf40d5 cat /sys/class/net/eth0/iflink
-```
-
-and you should see the output (we're looking for 48)
+So to iterate through the containers and check the mapping, run this command:
 
 ```
-46
+for container in $(docker ps -aq); do
+  docker exec -it $container cat /sys/class/net/eth0/iflink
+done;
 ```
 
-Dang...that's not the right one. Keep trying the above command until you find one with the output `48`, and that's our suspect container!
+and you should see the output (we're looking for 15)
+
+```
+17
+19
+15
+21
+25
+13
+11
+```
+
+So the third container we have is our suspect!
 
 ### Arresting the suspect
 
@@ -133,4 +140,4 @@ docker stop http-sender3
 
 And like magic, our web server is nice and responsive again! Great job!
 
-:clapping: :clapping: :clapping:
+:clap: :clap: :clap:
