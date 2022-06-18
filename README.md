@@ -43,7 +43,7 @@ Something is wrong with our nice shiny webserver serving content at `localhost:3
 So first, we need to figure out what interface things are running on:
 
 ```
-$ for interface in $(ip link show | grep '^[[:digit:]]\+' | awk -F ':' '{print $2}'); do
+for interface in $(ip link show | grep '^[[:digit:]]\+' | awk -F ':' '{print $2}'); do
   sudo timeout 1 tcpdump -i $interface port 3000
   printf "\n"
   echo "this interface is $interface"
@@ -67,7 +67,7 @@ This should make it very obvious which interface the packets are being sent on. 
 
 So it is indeed the bridge interface...but that doesn't help us narrow anything down...
 
-Let's try something a bit different, using the `veth` interfaces directly (since they have weird names with `@` characters, they don't work with our previous attempt:
+Let's try something a bit different, using the `veth` interfaces directly. Since they have weird names with `@` characters, they don't work with our previous attempt:
 
 ```
 for interface in $(ip link show | grep veth | awk -F ' ' '{print $2}' | awk -F '@' '{print $1}'); do
