@@ -10,6 +10,8 @@ tasks:
     init: until (curl --head -s localhost:3000 > /dev/null); do sleep 1; clear; echo "Waiting for the containers to start up...when they're ready, the browser window will open above..."; done
     command: echo "let's start the investigation!"
     openMode: tab-after
+  - name: delete the evidence
+    command: sleep 5 && rm .env.suspects && exit
 
 ports:
   # we'll use this to check how quickly the website loads
