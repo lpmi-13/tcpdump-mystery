@@ -130,13 +130,13 @@ and you should see the output (we're looking for 15)
 11
 ```
 
-So the third container we have is our suspect!
+So the third container in the `docker ps -a` list is our suspect!
 
 ### Arresting the suspect
 
-Now that we've found our container (turns out it was http-sender3 in this case), lets stop it with:
+Now that we've found our container (turns out it was http-sender4 in this case, **don't just assume the containers are in name order**), lets stop it with:
 
-`docker stop http-sender3`
+`docker stop http-sender4`
 
 And like magic, our web server is nice and responsive again! Great job!
 
